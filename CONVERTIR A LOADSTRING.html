@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Generador de Carga de Scripts | LoadString Formatter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Estilizado */
+        :root {
+            --primary-color: #3b82f6; /* Azul brillante */
+            --secondary-color: #10b981; /* Verde esmeralda */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            margin-bottom: 30px;
+            color: #6b7280;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 25px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+        button.primary-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        button.primary-btn:hover {
+            background-color: #059669;
+        }
+
+        button.primary-btn:active {
+            transform: scale(0.99);
+        }
+
+        #outputArea {
+            margin-top: 20px;
+            text-align: left;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        #output {
+            background-color: #1f2937; /* Fondo oscuro para código */
+            color: #f9fafb; /* Texto claro */
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.95em;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            user-select: all; /* Permite una selección más fácil */
+        }
+
+        .copy-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            float: right;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background-color: #2563eb;
+        }
+
+        .copy-message {
+            display: inline-block;
+            margin-left: 10px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>LoadString Formatter</h1>
+    <p class="subtitle">Convierte tu URL en código ejecutable con el formato <code>loadstring(game:HttpGet("..."))()</code>.</p>
+
+    <label for="linkInput">Introduce el Enlace del Script (URL):</label>
+    <input type="text" id="linkInput" placeholder="Ej: https://raw.githubusercontent.com/user/script.lua">
+
+    <button class="primary-btn" onclick="generarLoadString()">
+        ✨ Generar y Copiar Código
+    </button>
+
+    <div id="outputArea">
+        <label>Resultado Formateado:</label>
+        <div id="output">
+            <span style="color: #9ca3af;">El código aparecerá aquí...</span>
+        </div>
+        <button class="copy-button" onclick="copiarOutput()">Copiar</button>
+        <span id="copyMessage" class="copy-message">¡Copiado!</span>
+    </div>
+</div>
+
+<script>
+    // Lógica JavaScript
+    function generarLoadString() {
+        const link = document.getElementById('linkInput').value.trim();
+        const outputElement = document.getElementById('output');
+
+        if (link === "") {
+            outputElement.innerHTML = '<span style="color: #ef4444;">❌ Por favor, inserta un enlace válido.</span>';
+            return;
+        }
+
+        // Formatear el resultado
+        const formattedCode = `loadstring(game:HttpGet("${link}"))()`;
+
+        // Mostrar el resultado
+        outputElement.textContent = formattedCode;
+        
+        // Copiar el resultado automáticamente
+        copiarOutput(formattedCode);
+    }
+
+    function copiarOutput(textToCopy = null) {
+        const outputElement = document.getElementById('output');
+        const copyMessage = document.getElementById('copyMessage');
+        const text = textToCopy !== null ? textToCopy : outputElement.textContent.trim();
+
+        if (text === 'El código aparecerá aquí...') {
+            return; // No copiar el texto de placeholder
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                copyMessage.style.opacity = 1;
+                setTimeout(() => { copyMessage.style.opacity = 0; }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                fallbackCopyTextToClipboard(text);
+            });
+        } else {
+             fallbackCopyTextToClipboard(text);
+        }
+    }
+    
+    function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Estilos para ocultar el textarea
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.textContent = '¡Copiado! (F)';
+            copyMessage.style.opacity = 1;
+            setTimeout(() => { copyMessage.style.opacity = 0; }, 2000);
+        } catch (err) {
+            alert('❌ No se pudo copiar automáticamente. Por favor, cópialo manualmente.');
+        }
+
+        document.body.removeChild(textArea);
+    }
+</script>
+</body>
+</html>
