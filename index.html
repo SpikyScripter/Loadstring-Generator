@@ -193,9 +193,9 @@
 
 <script>
 function convert(){
-  const code=document.getElementById('codeInput').value.trim();
-  const output=document.getElementById('output');
-  const newBtn=document.getElementById('newCodeBtn');
+  const code = document.getElementById('codeInput').value.trim();
+  const output = document.getElementById('output');
+  const newBtn = document.getElementById('newCodeBtn');
 
   if(!code){
     output.innerText = "Error: No ingresaste ningún enlace o código.";
@@ -203,18 +203,16 @@ function convert(){
     return;
   }
 
-  const allowed1 = "https://gist.github.com/";
-  const allowed2 = "https://pastefy.app/";
-
-  if(!(code.startsWith(allowed1) || code.startsWith(allowed2))){
+  // Verificar que el código empieza con pastefy.app o gist.github
+  if(!code.includes('pastefy.app') && !code.includes('gist.github')){
     output.innerText = "❌ Error: Solo se permiten enlaces de GITHUB (gist.github.com) y PASTEFY (pastefy.app).";
     newBtn.style.display = 'inline-block';
     return;
   }
 
-  const encoded=btoa(code);
-  const result=`loadstring(game:HttpGet("https://example.com/?data=${encoded}"))()`;
-  output.innerText=result;
+  // Colocar el código directamente donde corresponde
+  let finalCode = `loadstring(game:HttpGet("${code}"))()`;
+  output.innerText = finalCode;
   newBtn.style.display = 'inline-block';
 }
 
